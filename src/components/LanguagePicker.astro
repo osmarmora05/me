@@ -27,7 +27,7 @@ function changeLanguage(target: Lang): string {
 
 <Button
     id="language-picker"
-    class="anchor/language-trigger flex items-center justify-center gap-1.5"
+    class="flex items-center justify-center gap-1.5"
     popovertarget="language-popover"
     type="button"
 >
@@ -37,7 +37,7 @@ function changeLanguage(target: Lang): string {
 
 <div
     id="language-popover"
-    class="anchor/language-trigger anchored-bottom-center mt-4 w-48 p-1 shadow-md rounded-md bg-split border border-border text-foreground"
+    class="mt-4 w-48 p-1 shadow-md rounded-md bg-split border border-border text-foreground"
     popover
 >
     <div class="flex flex-col gap-1.5 w-full">
@@ -81,8 +81,13 @@ function changeLanguage(target: Lang): string {
 </div>
 
 <style>
+    #language-picker {
+        anchor-name: --language-trigger;
+    }
     /* https://transitions.dev/detail.html?t=menu-dropdown */
     #language-popover {
+        position-anchor: --language-trigger;
+        position-area: bottom center;
         --dropdown-open-dur: 250ms;
         --dropdown-pre-scale: 0.97;
         --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
