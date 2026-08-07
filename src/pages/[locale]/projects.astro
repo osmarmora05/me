@@ -1,0 +1,230 @@
+---
+import { getCollection } from "astro:content";
+import GitForkIcon from "../../assets/icons/git-fork.svg";
+import SearchIcon from "../../assets/icons/search.svg";
+import Button from "../../components/Button.astro";
+import ButtonPill from "../../components/ButtonPill.astro";
+import CollapsibleButton from "../../components/CollapsibleButton.astro";
+import HorizontalCard from "../../components/HorizontalCard.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+import Layout from "../../layouts/Layout.astro";
+
+export { localizedPaths as getStaticPaths } from "../../lib/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const entry = await getCollection("projects", ({ id }) => {
+    return id.startsWith(`${lang}/`);
+});
+
+function parseDate(value: string) {
+    const [month, year] = value.split("/").map(Number);
+    return new Date(2000 + year, month - 1);
+}
+
+const withDate = entry.filter((p) => p.data.initDay);
+const withoutDate = entry.filter((p) => !p.data.initDay);
+
+const recentFirst = [
+    ...withDate.sort(
+        (a, b) =>
+            parseDate(b.data.initDay!).getTime() -
+            parseDate(a.data.initDay!).getTime(),
+    ),
+    ...withoutDate,
+];
+
+const techStack: string[] = [];
+
+entry.forEach((project) => {
+    project.data.techStack.forEach((tec) => {
+        if (!techStack.includes(tec)) {
+            techStack.push(tec);
+        }
+    });
+});
+---
+
+<Layout title="osmarmora05 - Projects">
+    <section class="mt-18 text-foreground">
+        <header>
+            <div>
+                <div>
+                    <div class="relative group">
+                        <div
+                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none group-focus-within:text-foreground text-neutral-400 transition-colors"
+                        >
+                            <SearchIcon width={18} height={18} />
+                        </div>
+
+                        <input
+                            id="search-projects"
+                            type="text"
+                            class="block w-full ps-9 pe-3 py-2.5 border border-border text-sm focus:text-foreground shadow-xs rounded-md"
+                            placeholder={t("projects.searchPlaceHolder")}
+                        />
+                    </div>
+                    <div class="flex items-center justify-between mt-4">
+                        <span
+                            class="flex justify-center items-center gap-1.5 text-xs"
+                        >
+                            <GitForkIcon width={14} height={14} />
+                            {`${entry.length} ${t("projects.repositories")}`}
+                        </span>
+
+                        <a
+                            href={"https://github.com/osmarmora05?tab=repositories"}
+                            target="_blank"
+                            class="decoration-foreground underline-offset-2 hover:underline w-fit text-xs"
+                            >{t("projects.viewOnGithub")}
+                        </a>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-start items-center gap-1.5">
+                    <Button
+                        id={"recent-projects"}
+                        class={`active [&.active]:bg-split [&.active]:border-border text-xs [&.active]:font-bold transition-colors`}
+                        >{t("projects.recentProject")}</Button
+                    >
+                    <Button
+                        id={"oldest-projects"}
+                        class={`[&.active]:bg-split [&.active]:border-border text-xs [&.active]:font-bold transition-colors`}
+                        >{t("projects.oldestProject")}</Button
+                    >
+                </div>
+            </div>
+
+            <div class="flex justify-start mt-4 items-start">
+                <span class="mr-1.5 pt-1">{t("projects.filters")}</span>
+
+                <CollapsibleButton class="items-start">
+                    <div class="flex flex-wrap gap-1.5">
+                        {
+                            techStack.map((e) => (
+                                <ButtonPill
+                                    class="tech-button [&.active]:border-yellow-3"
+                                    data-tech={e}
+                                >
+                                    {e}
+                                </ButtonPill>
+                            ))
+                        }
+                    </div>
+                </CollapsibleButton>
+            </div>
+        </header>
+    </section>
+
+    <div class="flex flex-col space-y-3 mt-6 projects">
+        {recentFirst.map((project) => <HorizontalCard project={project} />)}
+    </div>
+</Layout>
+
+<script>
+    const filter = document.querySelector("#search-projects");
+    const allProjects = document.querySelectorAll(".project");
+    const techStack = document.querySelectorAll(".tech-button");
+
+    const projectsContainer = document.querySelector(".projects");
+
+    const recentButton = document.querySelector("#recent-projects");
+    const oldestButton = document.querySelector("#oldest-projects");
+
+    filter?.addEventListener("input", (event) => {
+        const target = event.currentTarget as HTMLInputElement;
+        filterProjects(target.value);
+    });
+
+    function filterProjects(filter: string) {
+        const activeTechs = [
+            ...document.querySelectorAll(".tech-button.active"),
+        ].map((item) => item.getAttribute("data-tech")?.toLowerCase());
+
+        allProjects.forEach((item) => {
+            const name =
+                item
+                    .querySelector(".name-project")
+                    ?.getAttribute("data-name")
+                    ?.toLowerCase() ?? "";
+
+            const techStackProject =
+                item
+                    .querySelector(".project-tech-stack")
+                    ?.getAttribute("data-stack")
+                    ?.toLowerCase()
+                    .split(",") ?? [];
+
+            const matchesName = name.includes(filter.toLowerCase());
+
+            const matchesTech =
+                activeTechs.length === 0 ||
+                activeTechs.some((tech) => techStackProject.includes(tech));
+
+            if (matchesName && matchesTech) {
+                item.style.display = "";
+                item.classList.remove("hidden");
+            } else {
+                item.style.display = "none";
+                item.classList.add("hidden");
+            }
+        });
+    }
+
+    techStack.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            const button = e.currentTarget as HTMLElement;
+
+            button.classList.toggle("active");
+
+            const value = (filter as HTMLInputElement)?.value ?? "";
+            filterProjects(value);
+        });
+    });
+
+    recentButton?.addEventListener("click", () => {
+        sortProjects(true);
+
+        recentButton.classList.add("active");
+        oldestButton?.classList.remove("active");
+    });
+
+    oldestButton?.addEventListener("click", () => {
+        sortProjects(false);
+
+        oldestButton.classList.add("active");
+        recentButton?.classList.remove("active");
+    });
+
+    function parseDate(value: string) {
+        const [month, year] = value.split("/").map(Number);
+        return new Date(2000 + year, month - 1).getTime();
+    }
+
+    function sortProjects(recentFirst: boolean) {
+        const projects = [...projectsContainer.children] as HTMLElement[];
+
+        projects.sort((a, b) => {
+            const dateA =
+                a.getAttribute("data-end-day") ||
+                a.getAttribute("data-init-day");
+
+            const dateB =
+                b.getAttribute("data-end-day") ||
+                b.getAttribute("data-init-day");
+
+            if (!dateA && !dateB) return 0;
+            if (!dateA) return 1;
+            if (!dateB) return -1;
+
+            return recentFirst
+                ? parseDate(dateB) - parseDate(dateA)
+                : parseDate(dateA) - parseDate(dateB);
+        });
+
+        projects.forEach((project) => {
+            projectsContainer.appendChild(project);
+        });
+    }
+</script>

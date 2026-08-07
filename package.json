@@ -1,0 +1,32 @@
+{
+  "name": "me",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "format": "biome format . --write",
+    "lint": "biome lint .",
+    "lint:fix": "biome lint . --write",
+    "check": "biome check ."
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.5",
+    "@astrojs/node": "^11.1.0",
+    "@rexa-developer/tiks": "^0.3.0",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.6",
+    "cnfast": "^0.0.8",
+    "sharp": "^0.35.3",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.2",
+    "@tailwindcss/typography": "^0.5.20"
+  }
+}

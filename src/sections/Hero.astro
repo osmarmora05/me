@@ -1,0 +1,46 @@
+---
+import { Image } from "astro:assets";
+import myImage from "../assets/img/osmarmora05-dev.webp";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const heroText = t("hero.me");
+const heroParts = heroText.split(/(\{[^|]+\|.*?\})/g);
+---
+
+<section
+    class="text-foreground mt-18 flex w-full flex-wrap-reverse items-center justify-between gap-10"
+>
+    <div class="flex max-w-lg flex-col items-start gap-8 text-lg">
+        <div class="flex flex-col gap-6">
+            <h1 class="w-fit text-4xl font-semibold">
+                {t("hero.greeting")}
+                <span class="text-green-2"> Osmar</span>
+            </h1>
+
+            <p class="w-full text-pretty">
+                {
+                    heroParts.map((part) => {
+                        const match = part.match(/^\{([^|]+)\|(.*)\}$/);
+
+                        if (!match) return part;
+
+                        const [, className, text] = match;
+
+                        return <span class={className}>{text}</span>;
+                    })
+                }
+            </p>
+        </div>
+    </div>
+
+    <picture class="flex items-center justify-center">
+        <Image
+            src={myImage}
+            class="size-36 rounded-full transition-transform duration-150 ease-in-out hover:scale-110 hover:rotate-3"
+            alt="Osmar Mora"
+        />
+    </picture>
+</section>

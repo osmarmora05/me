@@ -1,0 +1,47 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import ArrowRight from "../assets/icons/arrow-narrow-right.svg";
+import Code from "../assets/icons/code.svg";
+import Card from "../components/Card.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const entry = await getCollection("projects", ({ id }) => {
+    return id.startsWith(`${lang}/`);
+});
+
+const projects = entry.sort((a, b) => a.data.index - b.data.index).slice(0, 4);
+---
+
+<section class="text-foreground mt-18 w-full">
+    <header class="w-full flex justify-between items-center">
+        <div
+            class="text-3xl font-semibold text-yellow-3 flex items-center gap-1.5"
+        >
+            <Code width={28} height={28} />
+            <h2>{t("projects.title")}</h2>
+        </div>
+
+        <a
+            href={getRelativeLocaleUrl(`${lang}`, `/projects`)}
+            class="group flex items-center justify-center gap-1 group-hover:text-foreground"
+        >
+            {t("projects.more")}
+            <ArrowRight
+                class={"text-neutral-500 transition-colors duration-150 group-hover:text-foreground"}
+            />
+        </a>
+    </header>
+    <div class="mt-6 w-full flex flex-wrap gap-4 justify-center items-start">
+        {
+            projects.map((project) => (
+                <ul>
+                    <Card project={project} />
+                </ul>
+            ))
+        }
+    </div>
+</section>

@@ -1,0 +1,35 @@
+---
+// Thaks to: https://tarasov.dev/blog/how-to-add-dark-theme-in-astro/
+
+import Moon from "../assets/icons/moon.svg";
+import Sun from "../assets/icons/sun.svg";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<button
+    type={"button"}
+    class="inline-flex items-center justify-center hover:border hover:border-border hover:bg-split rounded-md w-10 h-10 cursor-pointer"
+    id="theme-switcher"
+    title={t("nav.switchTheme")}
+>
+    <Sun class="hidden dark:inline" />
+    <Moon class="inline dark:hidden" />
+</button>
+
+<script>
+    import { tiks } from "@rexa-developer/tiks";
+
+    document.getElementById("theme-switcher")?.addEventListener("click", () => {
+        if (localStorage.theme === "dark") {
+            localStorage.theme = "light";
+            document.documentElement.classList.remove("dark");
+        } else {
+            localStorage.theme = "dark";
+            document.documentElement.classList.add("dark");
+        }
+        tiks.click();
+    });
+</script>

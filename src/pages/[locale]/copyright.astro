@@ -1,0 +1,25 @@
+---
+import { getEntry, render } from "astro:content";
+
+import { getLangFromUrl } from "../../i18n/utils";
+import Layout from "../../layouts/Layout.astro";
+import WraperMarkdown from "../../layouts/WraperMarkdown.astro";
+
+export { localizedPaths as getStaticPaths } from "../../lib/utils";
+
+const lang = getLangFromUrl(Astro.url);
+
+const copyright = await getEntry("copyright", lang);
+
+if (!copyright) {
+    throw new Error("Not found copyright content");
+}
+
+const { Content } = await render(copyright);
+---
+
+<Layout title={`osmarmora05 - ${copyright.data.title}`}>
+    <WraperMarkdown>
+        <Content />
+    </WraperMarkdown>
+</Layout>

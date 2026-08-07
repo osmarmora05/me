@@ -1,0 +1,20 @@
+---
+import { cn } from "cnfast";
+
+interface Props {
+    class?: string;
+    isActive?: boolean;
+}
+
+const { class: className, isActive, ...rest } = Astro.props;
+---
+
+<span
+    class={cn(
+        "inline-flex items-center bg-split border border-border text-foreground font-medium px-2 py-1 rounded w-fit text-[11px] gap-1 transition-colors",
+        className,
+    )}
+    {...rest}
+>
+    <slot />
+</span>

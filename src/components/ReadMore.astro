@@ -1,0 +1,62 @@
+---
+// thanks: https://codepen.io/tha-Sup3rN0va/pen/xbOdEJm
+
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const readMore = `"${t("projects.readMore")}"`;
+const readLess = `"${t("projects.readLess")}"`;
+---
+
+<div class="wrapper">
+    <p>
+        <input type="checkbox" id="first" />
+        <slot />
+        <label class="reading" for="first" aria-label="reading"></label>
+    </p>
+</div>
+
+<style define:vars={{ readMore, readLess }}>
+    .wrapper {
+        box-sizing: border-box;
+        display: inline-block;
+        max-width: 90ch;
+        padding: 0;
+        margin: 0;
+
+        p {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            transition: all 1s ease;
+
+            input {
+                display: none;
+            }
+
+            &:has(#first:checked) {
+                white-space: initial;
+
+                .reading::before {
+                    content: var(--readLess);
+                }
+            }
+        }
+
+        label.reading {
+            color: var(--color-neutral-500);
+            &::before {
+                display: block;
+                content: var(--readMore);
+            }
+
+            &:hover {
+                color: var(--text-foreground);
+            }
+
+            cursor: pointer;
+        }
+    }
+</style>
