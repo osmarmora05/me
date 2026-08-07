@@ -1,7 +1,6 @@
 // @ts-check
 
 import mdx from "@astrojs/mdx";
-import node from "@astrojs/node";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig, fontProviders } from "astro/config";
 
@@ -49,8 +48,4 @@ export default defineConfig({
   },
 
   integrations: [mdx()],
-
-  adapter: node({
-    mode: "standalone",
-  }),
 });
