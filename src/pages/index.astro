@@ -1,5 +1,15 @@
 ---
-const currentLocale = Astro.currentLocale;
+// https://ld-web.net/en/articles/astro-i18n-routing/
+import { i18n } from "astro:config/server";
+import { getPathByLocale } from "astro:i18n";
+
+export const prerender = false;
+
+const targetLocale = Astro.preferredLocale
+    ? getPathByLocale(Astro.preferredLocale)
+    : i18n!.defaultLocale;
+
+return Astro.redirect(`/${targetLocale}/`);
 ---
 
-<meta http-equiv="refresh" content={`0;url=/${currentLocale}/`} />
+Redirecting to {`/${targetLocale}/`}...

@@ -76,11 +76,7 @@ function getPathForCurrentPage() {
     const { pathname } = Astro.url;
     const parts = pathname.split("/");
 
-    console.log("Hola");
-
-    console.log(parts[2]);
-
-    return parts[3];
+    return parts[2];
 }
 ---
 
