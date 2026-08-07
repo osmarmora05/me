@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import ArrowRight from "../assets/icons/arrow-narrow-right.svg";
 import Code from "../assets/icons/code.svg";
 import Card from "../components/Card.astro";
@@ -25,7 +26,7 @@ const projects = entry.sort((a, b) => a.data.index - b.data.index).slice(0, 4);
         </div>
 
         <a
-            href={`/${lang}/projects`}
+            href={getRelativeLocaleUrl(`${lang}`, `/projects`)}
             class="group flex items-center justify-center gap-1 group-hover:text-foreground"
         >
             {t("projects.more")}

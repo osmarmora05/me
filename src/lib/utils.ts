@@ -17,6 +17,7 @@ export async function localizedPaths(): Promise<LocalizedPath[]> {
   const langs = Object.keys(languages);
 
   return langs.map((locale) => {
+    console.log(locale);
     return { params: { locale } };
   });
 }

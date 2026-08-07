@@ -1,5 +1,6 @@
 ---
 import { Image } from "astro:assets";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import CollapsibleButton from "../components/CollapsibleButton.astro";
 import { getLangFromUrl, useTranslations } from "../i18n/utils";
 
@@ -57,7 +58,7 @@ const t = useTranslations(lang);
     </div>
 
     <a
-        href={`/${lang}/copyright`}
+        href={getRelativeLocaleUrl(`${lang}`, "copyright")}
         class="decoration-foreground underline-offset-2 w-fit underline"
         >{t("footer.copyright")}</a
     >

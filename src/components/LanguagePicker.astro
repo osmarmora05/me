@@ -1,5 +1,9 @@
 ---
 // https://docs.astro.build/en/recipes/i18n/
+// Thanks to:
+// https://www.locize.com/blog/astro-i18n
+// https://borjagomez.com/en/blog/i18n-with-astro/
+
 import LanguageIcon from "../assets/icons/language.svg";
 import { languages } from "../i18n/ui";
 import { getLangFromUrl, type Lang, useTranslations } from "../i18n/utils";
@@ -15,13 +19,18 @@ const FLAGS = {
 };
 
 function changeLanguage(target: Lang): string {
-    // Thanks to:
-    // https://www.locize.com/blog/astro-i18n
-    // https://borjagomez.com/en/blog/i18n-with-astro/
     const { pathname } = Astro.url;
-    const parts = pathname.split("/");
-    parts[1] = target;
-    return parts.join("/");
+    const parts = pathname.split("/").filter(Boolean);
+
+    const langIndex = parts.findIndex((segment) => segment in languages);
+
+    if (langIndex !== -1) {
+        parts[langIndex] = target;
+    } else {
+        parts.unshift(target);
+    }
+
+    return `/${parts.join("/")}`;
 }
 ---
 
@@ -50,6 +59,7 @@ function changeLanguage(target: Lang): string {
                 {
                     Object.entries(languages).map(([langLoop, label]) => {
                         const flag = FLAGS[langLoop] || " ";
+                        console.log(changeLanguage(langLoop as Lang));
 
                         return (
                             <li>

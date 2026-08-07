@@ -6,8 +6,12 @@ export type Lang = keyof typeof ui;
 const defaultLang = (i18n?.defaultLocale ?? "en") as Lang;
 
 export function getLangFromUrl(url: URL) {
-  const [, lang] = url.pathname.split("/");
-  if (lang in ui) return lang as keyof typeof ui;
+  const pathSegments = url.pathname.split("/").filter(Boolean);
+  const lang = pathSegments.find((segment) => segment in ui);
+  if (lang) {
+    return lang as keyof typeof ui;
+  }
+
   return defaultLang;
 }
 

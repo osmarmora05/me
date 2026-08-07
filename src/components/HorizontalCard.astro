@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import GithubIcon from "../assets/icons/brand-github.svg";
 import WorldIcon from "../assets/icons/world.svg";
 import { getLangFromUrl } from "../i18n/utils";
@@ -26,7 +27,10 @@ const stack = project.data.techStack;
             {
                 project.body ? (
                     <a
-                        href={`/${lang}/projects/${project.id.split("/").pop()}`}
+                        href={getRelativeLocaleUrl(
+                            `${lang}`,
+                            `projects/${project.id.split("/").pop()}`,
+                        )}
                         class="font-medium text-lg decoration-foreground underline-offset-2 underline w-fit name-project"
                         data-name={project.data.title.toLocaleLowerCase()}
                     >
