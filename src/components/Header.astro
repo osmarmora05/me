@@ -3,6 +3,7 @@
 // https://text-effects.colorion.co/
 
 import { getAbsoluteLocaleUrl, getRelativeLocaleUrl } from "astro:i18n";
+import { parse } from "astro:schema";
 import Github from "../assets/icons/brand-github.svg";
 import LinkedIn from "../assets/icons/brand-linkedin.svg";
 import CV from "../assets/icons/file-cv.svg";
@@ -75,7 +76,11 @@ function getPathForCurrentPage() {
     const { pathname } = Astro.url;
     const parts = pathname.split("/");
 
-    return parts[2];
+    console.log("Hola");
+
+    console.log(parts[2]);
+
+    return parts[3];
 }
 ---
 
