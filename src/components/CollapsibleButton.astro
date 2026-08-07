@@ -1,0 +1,37 @@
+---
+import { cn } from "cnfast";
+
+interface Props {
+    class?: string;
+}
+
+const { class: className, ...rest } = Astro.props;
+---
+
+<details
+    class={cn(
+        "collapsible-button group flex gap-2 justify-center items-center",
+        className,
+    )}
+    {...rest}
+>
+    <summary
+        class="text-neutral-400 hover:text-foreground cursor-pointer list-none py-1 tracking-tight select-none min-w-fit"
+    >
+        <span class="group-open:hidden">[ + ]</span>
+        <span class="hidden group-open:inline">[ - ]</span>
+    </summary>
+    <slot />
+</details>
+
+<script>
+    import { tiks } from "@rexa-developer/tiks";
+
+    const collapsibleButton = document.querySelectorAll(".collapsible-button");
+
+    collapsibleButton.forEach((e) => {
+        e.addEventListener("toggle", () => {
+            tiks.click();
+        });
+    });
+</script>

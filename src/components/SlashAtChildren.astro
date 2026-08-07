@@ -1,0 +1,21 @@
+---
+import { cn } from "cnfast";
+
+interface Props {
+    class?: string;
+    href: string;
+    target?: "_blank" | "_self";
+}
+
+const { href, class: className, target, ...rest } = Astro.props;
+---
+
+<a
+    class={cn("hover:text-foreground inline-flex tracking-tight", className)}
+    href={href}
+    target={target}
+    {...rest}
+>
+    <span>/</span>
+    <slot />
+</a>

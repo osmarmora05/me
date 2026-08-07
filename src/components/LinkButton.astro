@@ -1,0 +1,23 @@
+---
+import { cn } from "cnfast";
+
+interface Props {
+    class?: string;
+    href: string;
+    title?: string;
+}
+
+const { class: className, href, title, ...rest } = Astro.props;
+---
+
+<a
+    href={href}
+    title={title}
+    class={cn(
+        "inline-flex items-center justify-center border border-transparent hover:border-border hover:bg-split bg-transparent rounded-md w-fit cursor-pointer px-2.5 py-1",
+        className,
+    )}
+    {...rest}
+>
+    <slot />
+</a>

@@ -1,0 +1,251 @@
+---
+import BashIcon from "../assets/icons/bash_dark.svg";
+import CodeDots from "../assets/icons/code-dots.svg";
+import DockerIcon from "../assets/icons/docker.svg";
+import ExpoIcon from "../assets/icons/expo.svg";
+import FigmaIcon from "../assets/icons/figma.svg";
+import GitIcon from "../assets/icons/git.svg";
+import GithubIcon from "../assets/icons/github_dark.svg";
+import JavaScriptIcon from "../assets/icons/javascript.svg";
+import LuaIcon from "../assets/icons/lua.svg";
+import MySQLIcon from "../assets/icons/mysql-wordmark-dark.svg";
+import PenpotIcon from "../assets/icons/penpot_dark.svg";
+import PythonIcon from "../assets/icons/python.svg";
+import ReactIcon from "../assets/icons/react_dark.svg";
+import RustIcon from "../assets/icons/rust_dark.svg";
+import SQLiteIcon from "../assets/icons/sqlite.svg";
+import TailwindcssIcon from "../assets/icons/tailwindcss.svg";
+import TauriIcon from "../assets/icons/tauri.svg";
+import Badge from "../components/Badge.astro";
+import Button from "../components/Button.astro";
+
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+interface Tech {
+    categories: string[];
+    name: string;
+    icon: typeof JavaScriptIcon;
+}
+
+const stack: Tech[] = [
+    {
+        categories: [t("skills.stack.frontEnd"), t("skills.stack.languages")],
+        name: "JavaScript",
+        icon: JavaScriptIcon,
+    },
+    {
+        categories: [t("skills.stack.frontEnd")],
+        name: "React",
+        icon: ReactIcon,
+    },
+    {
+        categories: [t("skills.stack.frontEnd"), t("skills.stack.mobile")],
+        name: "Expo",
+        icon: ExpoIcon,
+    },
+    {
+        categories: [t("skills.stack.frontEnd")],
+        name: "Tailwindcss",
+        icon: TailwindcssIcon,
+    },
+    {
+        categories: [t("skills.stack.libraries")],
+        name: "Tauri",
+        icon: TauriIcon,
+    },
+    { categories: [t("skills.stack.tools")], name: "Git", icon: GitIcon },
+    { categories: [t("skills.stack.tools")], name: "Github", icon: GithubIcon },
+    {
+        categories: [t("skills.stack.tools"), t("skills.stack.devOps")],
+        name: "Docker",
+        icon: DockerIcon,
+    },
+    { categories: [t("skills.stack.design")], name: "Figma", icon: FigmaIcon },
+    {
+        categories: [t("skills.stack.design")],
+        name: "Penpot",
+        icon: PenpotIcon,
+    },
+    {
+        categories: [t("skills.stack.database")],
+        name: "MySQL",
+        icon: MySQLIcon,
+    },
+    {
+        categories: [t("skills.stack.database")],
+        name: "SQLite",
+        icon: SQLiteIcon,
+    },
+    {
+        categories: [t("skills.stack.languages")],
+        name: "Python",
+        icon: PythonIcon,
+    },
+    { categories: [t("skills.stack.languages")], name: "Rust", icon: RustIcon },
+    { categories: [t("skills.stack.languages")], name: "Lua", icon: LuaIcon },
+    { categories: [t("skills.stack.languages")], name: "Bash", icon: BashIcon },
+];
+
+const categories: string[] = [];
+
+stack.forEach((item) => {
+    item.categories.forEach((cat) => {
+        if (!categories.includes(cat)) {
+            categories.push(cat);
+        }
+    });
+});
+---
+
+<section class="text-foreground mt-18 w-full">
+    <header class="flex flex-col items-start gap-6 w-full">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div
+                class="text-3xl font-semibold text-red-1 flex items-center gap-1.5"
+            >
+                <CodeDots width={28} height={28} />
+                <h2>{t("skills.title")}</h2>
+            </div>
+            <span
+                id="audio-context-running"
+                class="hidden audio-context text-[10px] font-mono text-neutral-500 select-none"
+                >( {t("skills.labelSoundRunning")} )</span
+            >
+
+            <span
+                id="audio-context-suspended"
+                class="hidden audio-context text-[10px] font-mono text-neutral-500 select-none"
+                >( {t("skills.labelSoundSuspend")} )</span
+            >
+        </div>
+        <div
+            class="w-full flex items-center justify-start gap-1.5 flex-wrap"
+            id="filter-categories"
+        >
+            <Button
+                class={`active [&.active]:bg-split [&.active]:border-border text-xs [&.active]:font-bold transition-colors`}
+                data-filter="Todos"
+            >
+                {t("skills.filterAll")}
+            </Button>
+
+            {
+                categories.map((cat) => (
+                    <Button
+                        class={
+                            "[&.active]:bg-split [&.active]:border-border text-xs [&.active]:font-bold transition-colors`"
+                        }
+                        data-filter={cat}
+                    >
+                        {cat}
+                    </Button>
+                ))
+            }
+        </div>
+    </header>
+
+    <div id="tech-stack" class="flex flex-wrap gap-2 mt-6">
+        {
+            stack.map((item) => {
+                const Icon = item.icon;
+
+                return (
+                    <Badge
+                        class="tech-item text-sm group"
+                        data-categories={item.categories.join(",")}
+                    >
+                        <Icon />
+                        {item.name}
+                    </Badge>
+                );
+            })
+        }
+    </div>
+</section>
+
+<script>
+    import { defineTheme, tiks } from "@rexa-developer/tiks";
+
+    const filterContainer =
+        document.querySelector<HTMLElement>("#filter-categories");
+    const techBadges = document.querySelectorAll<HTMLElement>(
+        "#tech-stack .tech-item",
+    );
+    const audioContextTexts = document.querySelectorAll(".audio-context");
+    const audioCtx = new AudioContext();
+
+    audioContextTexts.forEach((span) => {
+        if (audioCtx.state == "running" && span.id == "audio-context-running") {
+            span.classList.toggle("hidden");
+        } else if (
+            audioCtx.state == "suspended" &&
+            span.id == "audio-context-suspended"
+        ) {
+            span.classList.toggle("hidden");
+        }
+    });
+
+    filterContainer?.addEventListener("click", (e) => {
+        const target = (e.target as HTMLElement).closest<HTMLButtonElement>(
+            "button",
+        );
+        if (!target) return;
+
+        const selectedFilter = target.getAttribute("data-filter");
+        if (!selectedFilter) return;
+
+        updateActiveButton(target);
+        tiks.click();
+        filterTechs(selectedFilter);
+    });
+
+    techBadges.forEach((badge, index) => {
+        const baseFreq = 50 + index * 30;
+
+        badge.addEventListener("mouseenter", () => {
+            const brand = defineTheme({
+                name: "arcade",
+                baseFreq,
+                oscType: "sine",
+            });
+
+            tiks.setTheme(brand);
+            tiks.success();
+        });
+
+        badge.addEventListener("mouseleave", () => {
+            const brand = defineTheme({
+                name: "arcade",
+                baseFreq: 500,
+                oscType: "sine",
+            });
+            tiks.setTheme(brand);
+        });
+    });
+
+    function updateActiveButton(newButton: HTMLElement) {
+        filterContainer?.querySelector(".active")?.classList.remove("active");
+        newButton.classList.add("active");
+    }
+
+    function filterTechs(filter: string) {
+        techBadges.forEach((item) => {
+            const categoriesAttr = item.getAttribute("data-categories") || "";
+            const itemCategories = categoriesAttr.split(",");
+
+            const matches =
+                filter === "Todos" || itemCategories.includes(filter);
+
+            if (matches) {
+                item.style.display = "";
+                item.classList.remove("hidden");
+            } else {
+                item.style.display = "none";
+                item.classList.add("hidden");
+            }
+        });
+    }
+</script>
