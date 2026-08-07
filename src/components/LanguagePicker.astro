@@ -1,0 +1,153 @@
+---
+// https://docs.astro.build/en/recipes/i18n/
+import LanguageIcon from "../assets/icons/language.svg";
+import { languages } from "../i18n/ui";
+import { getLangFromUrl, type Lang, useTranslations } from "../i18n/utils";
+import Button from "./Button.astro";
+import LinkButton from "./LinkButton.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const FLAGS = {
+    es: "🇪🇸",
+    en: "🇺🇸",
+};
+
+function changeLanguage(target: Lang): string {
+    // Thanks to:
+    // https://www.locize.com/blog/astro-i18n
+    // https://borjagomez.com/en/blog/i18n-with-astro/
+    const { pathname } = Astro.url;
+    const parts = pathname.split("/");
+    parts[1] = target;
+    return parts.join("/");
+}
+---
+
+<Button
+    id="language-picker"
+    class="anchor/language-trigger flex items-center justify-center gap-1.5"
+    popovertarget="language-popover"
+    type="button"
+>
+    <LanguageIcon />
+    {t("nav.language")}
+</Button>
+
+<div
+    id="language-popover"
+    class="anchor/language-trigger anchored-bottom-center mt-4 w-48 p-1 shadow-md rounded-md bg-split border border-border text-foreground"
+    popover
+>
+    <div class="flex flex-col gap-1.5 w-full">
+        <header>
+            <span class="px-2 py-1.5">Select Language</span>
+            <hr class="border-border -mx-1 my-1 h-px" />
+        </header>
+        <div class="flex flex-col">
+            <ul>
+                {
+                    Object.entries(languages).map(([langLoop, label]) => {
+                        const flag = FLAGS[langLoop] || " ";
+
+                        return (
+                            <li>
+                                <LinkButton
+                                    class="button-language w-full"
+                                    href={changeLanguage(langLoop as Lang)}
+                                    title={label}
+                                >
+                                    <span
+                                        class:list={[
+                                            "bullet-language",
+                                            "text-2xl",
+                                            { invisible: !(lang === langLoop) },
+                                        ]}
+                                    >
+                                        •
+                                    </span>
+                                    {flag}
+                                    &nbsp;
+                                    {label}
+                                </LinkButton>
+                            </li>
+                        );
+                    })
+                }
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    /* https://transitions.dev/detail.html?t=menu-dropdown */
+    #language-popover {
+        --dropdown-open-dur: 250ms;
+        --dropdown-pre-scale: 0.97;
+        --dropdown-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+        opacity: 0;
+        transform: scale(var(--dropdown-pre-scale));
+        transform-origin: top left;
+
+        transition:
+            opacity var(--dropdown-open-dur) var(--dropdown-ease),
+            transform var(--dropdown-open-dur) var(--dropdown-ease),
+            display var(--dropdown-open-dur) var(--dropdown-ease) allow-discrete,
+            overlay var(--dropdown-open-dur) var(--dropdown-ease) allow-discrete;
+
+        &:popover-open {
+            opacity: 1;
+            transform: scale(1);
+
+            @starting-style {
+                opacity: 0;
+                transform: scale(var(--dropdown-pre-scale));
+            }
+        }
+
+        /*TODO: :v*/
+
+        /*@media (prefers-reduced-motion: reduce) {
+            transition: none;
+            transform: none;
+            opacity: unset;
+        }*/
+    }
+</style>
+
+<script>
+    import { tiks } from "@rexa-developer/tiks";
+
+    const buttonsLanguage = document.querySelectorAll(".button-language");
+    const bulletsLanguage = document.querySelectorAll(".bullet-language");
+    const languagePicker = document.querySelector("#language-picker");
+
+    buttonsLanguage.forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+            bulletsLanguage.forEach((bullet) => {
+                bullet.classList.add("invisible");
+            });
+
+            e.currentTarget
+                .querySelector(".bullet-language")
+                ?.classList.remove("invisible");
+        });
+    });
+
+    languagePicker?.addEventListener("click", () => {
+        tiks.click();
+    });
+</script>
+
+<style>
+    .button-language {
+        display: grid;
+        grid-template-columns: 10px 1fr;
+        grid-template-rows: 1fr;
+        justify-items: start;
+        gap: 12px;
+        align-items: center;
+    }
+</style>

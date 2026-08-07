@@ -1,0 +1,20 @@
+---
+export { localizedPaths as getStaticPaths } from "../../lib/utils";
+
+import Layout from "../../layouts/Layout.astro";
+import Hero from "../../sections/Hero.astro";
+import Proyects from "../../sections/Proyects.astro";
+import Skills from "../../sections/Skills.astro";
+---
+
+<Layout title="osmarmora05 - Porfolio">
+    <Hero />
+    <Proyects />
+    <Skills />
+</Layout>
+
+<script>
+    import { tiks } from "@rexa-developer/tiks";
+
+    tiks.init();
+</script>

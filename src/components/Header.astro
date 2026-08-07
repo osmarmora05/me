@@ -1,0 +1,164 @@
+---
+// https://jbhutch.com/blog/astro-with-peristent-sidebar/?utm_source=newsletter.astroweekly.dev&utm_medium=referral&utm_campaign=astro-weekly-35
+// https://text-effects.colorion.co/
+import Github from "../assets/icons/brand-github.svg";
+import LinkedIn from "../assets/icons/brand-linkedin.svg";
+import CV from "../assets/icons/file-cv.svg";
+import Email from "../assets/icons/mail-plus.svg";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+import LanguagePicker from "./LanguagePicker.astro";
+import SlashAtChildren from "./SlashAtChildren.astro";
+import SwitchTheme from "./SwitchTheme.astro";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+interface LinkItem {
+    text: string;
+    href: string;
+    targetBlank: boolean;
+    icon: typeof Email;
+}
+
+interface PageItem {
+    text: string;
+    href: string;
+    dataValue: string;
+    class: string;
+}
+
+const links: LinkItem[] = [
+    {
+        text: t("nav.contact"),
+        href: "mailto:osmarmoradrianmoracerna@gmail.com",
+        targetBlank: true,
+        icon: Email,
+    },
+    {
+        text: "LinkedIn",
+        href: "https://ni.linkedin.com/in/osmar-adrian-mora-cerna-b1a081398",
+        targetBlank: true,
+        icon: LinkedIn,
+    },
+    {
+        text: "GitHub",
+        href: "https://github.com/osmarmora05",
+        targetBlank: true,
+        icon: Github,
+    },
+    {
+        text: "CV",
+        href: "https://drive.google.com/file/d/15Rny2kBBPqN5UydoulJi7FAro3HPfol8/view?usp=drive_link",
+        targetBlank: true,
+        icon: CV,
+    },
+];
+
+const pages: PageItem[] = [
+    {
+        text: t("nav.projects"),
+        href: `/${lang}/projects`,
+        dataValue: "projects",
+        class: "[&.active]:text-yellow-3 hover:text-yellow-3",
+    },
+    {
+        text: t("nav.about"),
+        href: `./${lang}/about`,
+        dataValue: "about",
+        class: "[&.active]:text-magenta-5 hover:text-magenta-5",
+    },
+];
+
+function getPathForCurrentPage() {
+    const { pathname } = Astro.url;
+    const parts = pathname.split("/");
+
+    return parts[2];
+}
+---
+
+<nav
+    id="nav"
+    class="flex flex-col justify-center items-start text-foreground gap-2 w-full"
+>
+    <div class="flex items-center justify-between w-full flex-wrap">
+        <h1 class="font-bold" id="nav-me">
+            ~<SlashAtChildren href={`/${lang}/`}>osmarmora05</SlashAtChildren>
+        </h1>
+
+        <div class="flex flex-wrap">
+            <div class="flex justify-start items-center gap-x-3">
+                <div class="flex justify-start items-center gap-x-5">
+                    {
+                        links.map((item) => {
+                            const Icon = item.icon;
+
+                            return (
+                                <a href={item.href} title={item.text}>
+                                    <Icon class="text-foreground" />
+                                </a>
+                            );
+                        })
+                    }
+                </div>
+
+                <div class="flex justify-center items-center gap-x-0.5">
+                    <SwitchTheme />
+                    <LanguagePicker />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <ul>
+        <li class="flex items-center justify-center gap-6">
+            {
+                pages.map((e) => (
+                    <SlashAtChildren
+                        class={`${e.class} text-neutral-400  tracking-tight`}
+                        href={e.href}
+                        data-value={e.dataValue}
+                        aria-current={
+                            getPathForCurrentPage() === `${e.dataValue}`
+                                ? "page"
+                                : false
+                        }
+                    >
+                        {e.text}
+                    </SlashAtChildren>
+                ))
+            }
+        </li>
+    </ul>
+</nav>
+
+<style>
+    #nav-me:hover,
+    #nav-me:hover > * {
+        background: linear-gradient(115deg, #f3d6d1, #d8e4c5, #a8ddb5, #a8dff7)
+            0 0 / 300% 100%;
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        animation: fx-aurora 7s linear infinite;
+    }
+    @keyframes fx-aurora {
+        0% {
+            background-position: 0% 50%;
+            filter: hue-rotate(0deg);
+        }
+        100% {
+            background-position: 300% 50%;
+            filter: hue-rotate(360deg);
+        }
+    }
+</style>
+
+<script>
+    const nav = document.querySelector("#nav");
+    const navActiveLink = nav?.querySelector("[aria-current=page]");
+
+    if (navActiveLink) {
+        navActiveLink.classList.toggle("active");
+    }
+</script>

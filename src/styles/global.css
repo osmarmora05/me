@@ -1,0 +1,46 @@
+@import "tailwindcss";
+@import "@toolwind/anchors";
+@plugin '@tailwindcss/typography';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+    --font-sans: var(--font-onest);
+}
+
+@theme {
+    --color-background: #f1f1f1;
+    --color-foreground: #464646;
+    --color-blue-4: #008ec4;
+    --color-green-10: #52caa2;
+    --color-green-2: #10a778;
+    --color-magenta-5: #523c79;
+    --color-red-1: #c30771;
+    --color-split: #e8e8e8;
+    --color-white-15: #f1f1f1;
+    --color-yellow-3: #a89c14;
+    --color-selection-background: #535353;
+    --color-selection-foreground: #b6d6fd;
+    --color-border: #1a1a1a;
+}
+
+@layer theme {
+    :root,
+    :host {
+        @variant dark {
+            --color-background: #14171b;
+            --color-foreground: #dee1e6;
+            --color-blue-4: #97ade5;
+            --color-green-10: #68cd7f;
+            --color-green-2: #77d18b;
+            --color-magenta-5: #b99ada;
+            --color-red-1: #f3818b;
+            --color-split: #1d2127;
+            --color-white-15: #c0c3c7;
+            --color-yellow-3: #ecb083;
+            --color-selection-background: #c0c3c7;
+            --color-selection-foreground: #14171b;
+            --color-border: #444444;
+        }
+    }
+}

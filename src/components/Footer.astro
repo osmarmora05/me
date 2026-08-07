@@ -1,0 +1,64 @@
+---
+import { Image } from "astro:assets";
+import CollapsibleButton from "../components/CollapsibleButton.astro";
+import { getLangFromUrl, useTranslations } from "../i18n/utils";
+
+interface CoolPeople {
+    name: string;
+    avatar: string;
+    link: string;
+}
+
+const coolPeople: CoolPeople[] = [
+    {
+        name: "Makkin",
+        avatar: "https://avatars.githubusercontent.com/u/95828792?v=4",
+        link: "https://github.com/MoraMartin99",
+    },
+
+    {
+        name: "Chicoy",
+        avatar: "https://avatars.githubusercontent.com/u/104796963?v=4",
+        link: "https://github.com/FranciscoMelen10",
+    },
+];
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<footer class="text-foreground mt-18 w-full flex flex-col gap-2 h-16">
+    <div class="w-full flex items-center justify-between">
+        <div class="flex items-center justify-center gap-1.5">
+            <span>{t("footer.people")}</span>
+            <CollapsibleButton>
+                <ul class="flex items-center justify-center gap-1.5">
+                    {
+                        coolPeople.map((e) => (
+                            <a
+                                href={e.link}
+                                title={e.name}
+                                target="_blank"
+                                rel="noopener"
+                            >
+                                <Image
+                                    src={e.avatar}
+                                    width={40}
+                                    height={40}
+                                    alt={e.name}
+                                    loading="lazy"
+                                />
+                            </a>
+                        ))
+                    }
+                </ul>
+            </CollapsibleButton>
+        </div>
+    </div>
+
+    <a
+        href={`/${lang}/copyright`}
+        class="decoration-foreground underline-offset-2 w-fit underline"
+        >{t("footer.copyright")}</a
+    >
+</footer>

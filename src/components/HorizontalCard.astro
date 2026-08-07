@@ -1,0 +1,103 @@
+---
+import type { CollectionEntry } from "astro:content";
+import GithubIcon from "../assets/icons/brand-github.svg";
+import WorldIcon from "../assets/icons/world.svg";
+import { getLangFromUrl } from "../i18n/utils";
+import Badge from "./Badge.astro";
+
+const lang = getLangFromUrl(Astro.url);
+
+interface Props {
+    project: CollectionEntry<"projects">;
+}
+
+const { project } = Astro.props;
+
+const stack = project.data.techStack;
+---
+
+<article
+    class="flex flex-col rounded-md border border-border p-3 space-y-2 project"
+    data-init-day={project.data.initDay}
+    data-end-day={project.data.endDay}
+>
+    <header class="flex items-center justify-between">
+        <div class="flex flex-col gap-y-1">
+            {
+                project.body ? (
+                    <a
+                        href={`/${lang}/projects/${project.id.split("/").pop()}`}
+                        class="font-medium text-lg decoration-foreground underline-offset-2 underline w-fit name-project"
+                        data-name={project.data.title.toLocaleLowerCase()}
+                    >
+                        {project.data.title}
+                    </a>
+                ) : (
+                    <h3
+                        class="font-medium text-lg name-project"
+                        data-name={project.data.title.toLocaleLowerCase()}
+                    >
+                        {project.data.title}
+                    </h3>
+                )
+            }
+
+            <p class="text-neutral-400 text-sm date-project">
+                {project.data.initDay} - {project.data.endDay}
+            </p>
+        </div>
+
+        <div class="flex items-center justify-center gap-x-2">
+            {
+                project.data.url && (
+                    <a
+                        href={project.data.url}
+                        aria-label="Demo"
+                        title="Demo"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <WorldIcon
+                            class={
+                                "text-neutral-500 transition-colors duration-150 hover:text-foreground"
+                            }
+                        />
+                    </a>
+                )
+            }
+
+            {
+                project.data.repo && (
+                    <a
+                        href={project.data.repo}
+                        aria-label="Repo"
+                        title="Repo"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <GithubIcon
+                            class={
+                                "text-neutral-500 transition-colors duration-150 hover:text-foreground"
+                            }
+                        />
+                    </a>
+                )
+            }
+        </div>
+    </header>
+
+    <p class="max-w-[55ch]">{project.data.description}</p>
+
+    <ul
+        class="flex gap-1.5 project-tech-stack"
+        data-stack={project.data.techStack.join(",")}
+    >
+        {
+            stack.map((e) => (
+                <li>
+                    <Badge>{e}</Badge>
+                </li>
+            ))
+        }
+    </ul>
+</article>

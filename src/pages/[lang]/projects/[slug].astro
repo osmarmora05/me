@@ -1,0 +1,27 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import WraperMarkdown from "../../../layouts/WraperMarkdown.astro";
+
+export async function getStaticPaths() {
+    const pages = await getCollection("projects");
+
+    const paths = pages.map((page) => {
+        const [lang, ...slug] = page.id.split("/");
+        return {
+            params: { lang, slug: slug.join("/") || undefined },
+            props: page,
+        };
+    });
+
+    return paths;
+}
+const page = Astro.props;
+const { Content } = await render(page);
+---
+
+<Layout title={`osmarmora05 - ${page.id.split("/").pop()}`}>
+    <WraperMarkdown>
+        <Content />
+    </WraperMarkdown>
+</Layout>

@@ -1,0 +1,105 @@
+---
+import "../styles/global.css";
+import { Font } from "astro:assets";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { getLangFromUrl } from "../i18n/utils";
+
+const { title } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+
+const image = "/og.png";
+const siteUrl = "https://osmarmora05.github.io/me";
+const description =
+    "Information Systems Engineering Student from Nicaragua. Front-end Developer, I like Linux and the terminal.";
+const canonical = Astro.url.href;
+const ogImage = new URL(image, siteUrl).toString();
+
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    name: "Osmar Adrian Mora Cerna",
+    url: siteUrl,
+    sameAs: [
+        "https://ni.linkedin.com/in/osmar-adrian-mora-cerna-b1a081398",
+        "https://github.com/osmarmora05",
+    ],
+    jobTitle: "Information Systems Engineer",
+    worksFor: {
+        "@type": "Organization",
+        name: "Freelance",
+    },
+};
+---
+
+<!doctype html>
+<html lang={lang}>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="generator" content={Astro.generator} />
+        <meta name="description" content={description} />
+        <base href={import.meta.env.BASE_URL} />
+        <!-- Canonical -->
+        <link rel="canonical" href={canonical} />
+
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content={canonical} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="es_ES" />
+        <meta property="og:site_name" content="osmarmora05 - Porfolio" />
+
+        <!-- Twitter / X -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:site" content="@osmarmora05" />
+        <meta name="twitter:creator" content="@osmarmora05" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+
+        <!-- JSON-LD structured data -->
+        <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+        <Font cssVariable="--font-onest" />
+        <title>{title}</title>
+        <script is:inline>
+            if (
+                localStorage.theme === "dark" ||
+                (!("theme" in localStorage) &&
+                    window.matchMedia("(prefers-color-scheme: dark)").matches)
+            ) {
+                document.documentElement.classList.add("dark");
+            } else {
+                document.documentElement.classList.remove("dark");
+            }
+        </script>
+    </head>
+    <body class="w-full flex justify-center items-center bg-background">
+        <div
+            class="max-w-sm md:max-w-3xl bg-background py-6 px-8 w-full"
+            id="container"
+        >
+            <Header />
+            <main>
+                <slot />
+            </main>
+
+            <Footer />
+        </div>
+    </body><style>
+        #container {
+            display: grid;
+            min-height: 100dvh;
+            grid-template-rows: auto 1fr auto;
+            background-color: var(--color-background);
+            color: var(--color-foreground);
+        }
+    </style>
+</html>
