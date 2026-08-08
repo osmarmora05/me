@@ -1,5 +1,5 @@
 <div align="center">
-    <a href="https://osmarmora05.github.io/me">
+    <a href="https://osmarmora05.vercel.app">
         <img src="./repo/showcase.webp">
     </a>
     <p></p>
@@ -40,7 +40,7 @@
 
 ## 🎮 Demo
 
-- [Live demo here!](https://osmarmora05.github.io/me/)
+- [Live demo here!](https://osmarmora05.vercel.app)
 
 ## 🛠️Tech Stack
 
